@@ -1,13 +1,10 @@
 from langchain_anthropic import ChatAnthropic
 
+from app.models import findings_block
+
 PROMPT = """Write a Markdown article for lineupoptimization.com analyzing this lineup.
 
-Game {game_id}, {team}, {game_date} (optimizer {optimizer_version}):
-- Announced lineup: {announced}
-- Optimized lineup: {optimized}
-- Expected runs announced: {announced_runs:.3f}
-- Expected runs optimized: {optimized_runs:.3f}
-- Expected improvement: {improvement:.3f} runs/game
+{summary}
 
 Editorial verdict: {rationale}
 
@@ -23,15 +20,8 @@ Rules:
 - Output only the article Markdown, starting with an H1 title."""
 
 def run(state):
-    result, verdict = state['result'], state['verdict']
-    findings = '\n'.join(f'- [{f.category}] {f.detail} ({f.source})' for f in state['context']) or '- none'
     writer = ChatAnthropic(model='claude-sonnet-5', max_tokens=4096)
-    article = writer.invoke(PROMPT.format(
-        game_id=result.game_id, team=result.team, game_date=result.game_date,
-        optimizer_version=result.optimizer_version,
-        announced=result.announced_lineup, optimized=result.optimized_lineup,
-        announced_runs=result.announced_expected_runs,
-        optimized_runs=result.optimized_expected_runs,
-        improvement=result.improvement,
-        rationale=verdict.rationale, findings=findings))
+    article = writer.invoke(PROMPT.format(summary=state['result'].summary(),
+                                          rationale=state['verdict'].rationale,
+                                          findings=findings_block(state['context'])))
     return {'article': article.text}
