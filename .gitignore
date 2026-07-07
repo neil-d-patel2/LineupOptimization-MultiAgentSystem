@@ -1,0 +1,15 @@
+# Secrets
+.env
+
+# Virtual environment (each developer creates their own — see README)
+.venv/
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+#design documentation
+database_design.md
+system_design.md

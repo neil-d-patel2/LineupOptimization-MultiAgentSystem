@@ -1,0 +1,13 @@
+# Core agent framework
+langgraph
+langchain
+langchain-anthropic
+
+# Database (PostgreSQL)
+psycopg[binary]
+
+# HTTP / data fetching (MLB Stats API, injury reports, etc.)
+requests
+
+# Config
+python-dotenv
